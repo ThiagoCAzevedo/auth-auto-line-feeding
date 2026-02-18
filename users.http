@@ -1,0 +1,37 @@
+# insert user
+POST http://localhost:8000/auth/register
+Content-Type: application/json
+
+{
+    "complete_name": "José Canato de Azevedo",
+    "email": "jose.azevedo@gruposese.com",
+    "password": "@Thiago123",
+    "roles": "admin",
+    "status": false
+}
+
+# list users
+# GET http://localhost:8000/auth/list-users
+
+# # list specific user
+# GET http://localhost:8000/auth/user/1
+
+# update user
+# PATCH http://localhost:8000/auth/update/1
+# Content-Type: application/json
+
+# {
+#     "email": "thiago@grupoasese.com"
+# }
+
+# # delete user
+# DELETE http://localhost8000/auth/delete/{user-id}
+# Content-Type: application/json
+
+# {
+
+# }
+
+
+# # try login based on user
+# POST http://localhost8000/auth/login

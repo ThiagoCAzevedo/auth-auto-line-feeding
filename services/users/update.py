@@ -5,6 +5,7 @@ from helpers.users import UserPassword, UserValidators
 
 
 class UpdateUsers:
+    @staticmethod
     def update_user(
         db: Session, user_id: int, complete_name: str | None = None, email: str | None = None, 
         password: str | None = None, role: str | None = None, status: bool | None = None
@@ -32,11 +33,11 @@ class UpdateUsers:
             user.email = email
 
         if password is not None:
-            ok, msg = UserPassword.validate_password(password)
+            ok, msg = UserValidators.validate_password(password)
             if not ok:
                 raise ValueError(msg)
 
-            user.set_password(password)
+            user.password = UserPassword.hash_password(password)
 
         if role is not None:
             user.role = role
@@ -47,3 +48,13 @@ class UpdateUsers:
         db.commit()
         db.refresh(user)
         return user
+    
+    @staticmethod
+    def deactivate_user(db: Session, user_id: int) -> bool:
+        user = db.query(Users).filter(Users.id == user_id).first()
+        if not user:
+            return False
+
+        user.status = False
+        db.commit()
+        return True

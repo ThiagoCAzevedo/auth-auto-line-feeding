@@ -4,6 +4,7 @@ from database.models.users import Users
 from helpers.users import UserPassword, UserValidators
 
 class RegisterUsers:
+    @staticmethod
     def create_user(db: Session, name: str, email: str, password: str, role: str) -> Users:
         ok, msg = UserValidators.validate_email_domain(email)
         if not ok:

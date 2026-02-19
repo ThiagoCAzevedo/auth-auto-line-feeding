@@ -1,7 +1,8 @@
 import re
 
 class UserValidators:
-    def validate_password(self, password: str):
+    @staticmethod
+    def validate_password(password: str):
         if len(password) < 6:
             return False, "The password must contain minimum of 6 characters."
         if len(password) > 128:
@@ -17,7 +18,8 @@ class UserValidators:
 
         return True, "Password created succesfully"
 
-    def validate_email_domain(self, email: str):
+    @staticmethod
+    def validate_email_domain(email: str):
         allowed_domains = [
             "@gruposese.com",
             "@volkswagen.com.br"

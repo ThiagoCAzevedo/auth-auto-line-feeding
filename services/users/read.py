@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from database.models.users import Users
 
 
-class GetUsers:
+class ReadUsers:
+    @staticmethod
     def list_users(
             db: Session, page: int = 1, page_size: int = 10, q: Optional[str] = None, 
             status: Optional[bool] = None
@@ -36,6 +37,6 @@ class GetUsers:
         offset = (page - 1) * page_size
         return query.offset(offset).limit(page_size).all(), query.count()
 
-
+    @staticmethod
     def list_specific_user(db: Session, user_id: int) -> Users:
         return db.query(Users).filter(Users.id == user_id).first()

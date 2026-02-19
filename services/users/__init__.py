@@ -1,4 +1,4 @@
 from .create import RegisterUsers
 from .delete import DeleteUsers
-from .get import GetUsers
+from .read import ReadUsers
 from .update import UpdateUsers

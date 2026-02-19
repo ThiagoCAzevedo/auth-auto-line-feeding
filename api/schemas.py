@@ -18,6 +18,11 @@ class UpdateUserSchema(BaseModel):
     role: Optional[str] = None
 
 
+class LoginUserSchema(BaseModel):
+    email: Optional[EmailStr] = None
+    password: Optional[str] = Field(None, min_length=6, max_length=128)
+
+
 # -- API RETURN (RESPONSE) --
 class UserResponseSchema(BaseModel):
     id: int

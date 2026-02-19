@@ -21,6 +21,7 @@ class UpdateUserSchema(BaseModel):
 class LoginUserSchema(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=6, max_length=128)
+    remember_me: bool = False
 
 
 # -- API RETURN (RESPONSE) --
@@ -40,3 +41,11 @@ class UserPaginationSchema(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class LoginResponseSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str
+    remember_me: bool = False
+    user: UserResponseSchema

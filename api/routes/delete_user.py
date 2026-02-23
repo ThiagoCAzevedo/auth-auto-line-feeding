@@ -4,13 +4,14 @@ from services.users import DeleteUsers
 from database.database import get_db
 from helpers.log.logger import logger
 from helpers.http_exceptions import HTTP_Exceptions
+from helpers.security.dependencies import require_admin
 
 
 router = APIRouter()
 log = logger("users")
 
 
-@router.delete("/delete/{user_id}", summary="Permanently delete a user")
+@router.delete("/{user_id}", summary="Permanently delete a user", dependencies=[Depends(require_admin)])
 def delete_user(user_id: int, db: Session = Depends(get_db)):
 
     try:

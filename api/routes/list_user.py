@@ -6,13 +6,14 @@ from services.users import ReadUsers
 from database.database import get_db
 from helpers.log.logger import logger
 from helpers.http_exceptions import HTTP_Exceptions
+from helpers.security.dependencies import require_admin
 
 
 router = APIRouter()
 log = logger("users")
 
 
-@router.get("/all", summary="List all users - Pagination, search and filters included", response_model=UserPaginationSchema)
+@router.get("/list-all", summary="List all users - Pagination, search and filters included", response_model=UserPaginationSchema, dependencies=[Depends(require_admin)])
 def list_all_users(
     db: Session = Depends(get_db), page: int = Query(1, ge=1, description="Actual page (>= 1)"),
     page_size: int = Query(10, ge=1, le=100, description="Page size (1-100)"), q: Optional[str] = Query(None, description="Search by name or e-mail"),
@@ -34,7 +35,7 @@ def list_all_users(
         raise HTTP_Exceptions.http_500("Error while listing users", e)
 
 
-@router.get("/{user_id}", summary="List specific user", response_model=UserResponseSchema)
+@router.get("/list/{user_id}", summary="List specific user", response_model=UserResponseSchema, dependencies=[Depends(require_admin)])
 def list_specific_user(user_id: int, db: Session = Depends(get_db)):
     try:
         user = ReadUsers.list_specific_user(

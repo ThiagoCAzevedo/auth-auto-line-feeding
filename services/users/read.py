@@ -17,12 +17,13 @@ class ReadUsers:
 
         if q:
             like = f"%{q}%"
-            query = query.filter(or_(Users.complete_name.ilike(like), Users.email.ilike(like)))
+            query = query.filter(or_(Users.first_name.ilike(like), Users.last_name.ilike(like), Users.email.ilike(like)))
 
         sort_columns = {
             "created_at": Users.created_at,
             "updated_at": Users.updated_at,
-            "complete_name": Users.complete_name,
+            "first_name": Users.first_name,
+            "last_name": Users.last_name,
             "email": Users.email,
             "status": Users.status,
             "id": Users.id,

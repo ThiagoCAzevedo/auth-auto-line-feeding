@@ -14,11 +14,10 @@ log = logger("users")
 @router.post("", summary="Register a new user", response_model=UserResponseSchema, status_code=status.HTTP_201_CREATED)
 def register_user(payload: CreateUserSchema, db: Session = Depends(get_db)):
     try:
-        user = RegisterUsers.create_user(
-            db=db, name=payload.complete_name, email=payload.email, password=payload.password, 
-            role=payload.role or "user"
+        return RegisterUsers.create_user(
+            db=db, first_name=payload.first_name, last_name=payload.last_name, email=payload.email, 
+            password=payload.password
         )
-        return user
     
     except Exception as e:
         raise HTTP_Exceptions.http_500("Interal error while creating user", e)

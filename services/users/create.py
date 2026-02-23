@@ -4,8 +4,9 @@ from database.models.users import Users
 from helpers.users import UserPassword, UserValidators
 
 class RegisterUsers:
+
     @staticmethod
-    def create_user(db: Session, name: str, email: str, password: str, role: str) -> Users:
+    def create_user(db: Session, first_name: str, last_name: str, email: str, password: str) -> Users:
         ok, msg = UserValidators.validate_email_domain(email)
         if not ok:
             raise ValueError(msg)
@@ -15,8 +16,7 @@ class RegisterUsers:
             raise ValueError(msg)
 
         user = Users(
-            complete_name=name, email=email, password=UserPassword.hash_password(password), status=True,
-            role=role or "user",
+            first_name=first_name, last_name=last_name, email=email, password=UserPassword.hash_password(password)
         )
 
         db.add(user)

@@ -4,10 +4,10 @@ from typing import List, Optional
 
 # -- API CRUD --
 class CreateUserSchema(BaseModel):
-    complete_name: str = Field(..., min_length=1, max_length=255)
+    first_name: str = Field(..., min_length=1, max_length=255)
+    last_name: str = Field(..., min_length=1, max_length=255)
     email: EmailStr
     password: str = Field(..., min_length=6, max_length=128)
-    role: str | None = "user"
 
 
 class UpdateUserSchema(BaseModel):
@@ -27,7 +27,8 @@ class LoginUserSchema(BaseModel):
 # -- API RETURN (RESPONSE) --
 class UserResponseSchema(BaseModel):
     id: int
-    complete_name: str
+    first_name: str
+    last_name: str
     email: EmailStr
     status: bool
     role: str | None

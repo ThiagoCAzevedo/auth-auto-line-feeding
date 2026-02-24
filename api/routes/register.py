@@ -1,17 +1,16 @@
 from fastapi import APIRouter, Depends, status, BackgroundTasks
 from sqlalchemy.orm import Session
-from api.schemas import CreateUserSchema, RegisterResponseSchema, ResendVerificationSchema
-from services.users import RegisterUsers
+from api.schemas import CreateUserSchema, RegisterResponseSchema, EmailSchema
+from services import RegisterUsers
 from database.database import get_db
-from helpers.log.logger import logger
 from helpers.http_exceptions import HTTP_Exceptions
-from helpers.users.send_email import send_verification_email
+from helpers.services.send_email import EmailService
 from helpers.security.jwt import JWTHandler
-from database.models.users import Users
+from helpers.services.user import UserService
+from services.update import UpdateUsers
 
 
 router = APIRouter()
-log = logger("users")
 
 
 @router.post("", summary="Register a new user", status_code=status.HTTP_201_CREATED, response_model=RegisterResponseSchema)
@@ -25,7 +24,7 @@ def register_user(payload: CreateUserSchema, background: BackgroundTasks, db: Se
             password=payload.password
         )
 
-        background.add_task(send_verification_email, user.email, verification_token)
+        background.add_task(EmailService.send_verification_email(), user.email, verification_token)
 
         return {
             "message": "Successfully created user. Verify your e-mail.",
@@ -38,31 +37,14 @@ def register_user(payload: CreateUserSchema, background: BackgroundTasks, db: Se
 
 @router.get("/verify-email", summary="Verify user email")
 def verify_email(token: str, db: Session = Depends(get_db)):
-    data = JWTHandler.verify_token(token)
-
-    if data.get("purpose") != "email_verification":
-        raise HTTP_Exceptions.http_400("Invalid token purpose.")
-
-    user = db.query(Users).filter(Users.id == data["sub"]).first()
-
-    if not user:
-        raise HTTP_Exceptions.http_404("User not found.")
-
-    user.is_verified = True
-    db.commit()
-
+    data = JWTHandler.verify_token(token, "email_verification")
+    UpdateUsers.update_user(db, data["sub"], is_verified=True)
     return {"message": "Successfully verified e-mail"}
 
 
 @router.post("/resend-verification", summary="Resend user verify email")
-def resend_email_verification(payload: ResendVerificationSchema,db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.email == payload.email).first()
-
-    if not user:
-        raise HTTP_Exceptions.http_404("User not found.")
-
-    if user.is_verified:
-        raise HTTP_Exceptions.http_400("User already verified.")
+def resend_email_verification(payload: EmailSchema,db: Session = Depends(get_db)):
+    user = UserService.get_user_by_email(db, payload.email)
 
     verification_token = JWTHandler.create_access_token({
         "sub": str(user.id),
@@ -70,6 +52,5 @@ def resend_email_verification(payload: ResendVerificationSchema,db: Session = De
         "purpose": "email_verification"
     })
 
-    send_verification_email(user.email, verification_token)
-
+    EmailService.send_verification_email(user.email, verification_token)
     return {"message": "Verification email re-sent successfully."}

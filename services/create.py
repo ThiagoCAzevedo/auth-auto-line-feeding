@@ -20,7 +20,7 @@ class RegisterUsers:
             last_name=last_name,
             email=email,
             password=UserPassword.hash_password(password),
-            is_verified=False  # se você tiver esse campo
+            is_verified=False
         )
 
         db.add(user)

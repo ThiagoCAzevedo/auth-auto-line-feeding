@@ -3,6 +3,11 @@ from typing import List, Optional
 from helpers.users import UserValidators
 
 
+# -- GENERAL SCHEMAS --
+class EmailSchema(BaseModel):
+    email: EmailStr
+
+
 # -- API CRUD --
 class CreateUserSchema(BaseModel):
     first_name: str = Field(...)
@@ -63,14 +68,6 @@ class LoginUserSchema(BaseModel):
 
 class RefreshTokenSchema(BaseModel):
     refresh_token: str
-
-
-class ResendVerificationSchema(BaseModel):
-    email: EmailStr
-
-
-class ForgotPasswordSchema(BaseModel):
-    email: EmailStr
 
 
 class ResetPasswordSchema(BaseModel):

@@ -1,22 +1,24 @@
 import re
+from helpers.http_exceptions import HTTP_Exceptions
+
 
 class UserValidators:
     @staticmethod
     def validate_password(password: str):
         if len(password) < 6:
-            return False, "The password must contain minimum of 6 characters."
+            raise HTTP_Exceptions.http_400("The password must contain minimum of 6 characters.")  
         if len(password) > 128:
-            return False, "The password must contain maximum of 128 characters."
+            raise HTTP_Exceptions.http_400("The password must contain maximum of 128 characters.")
         if not re.search(r"[0-9]", password):
-            return False, "The password must contain a number."
+            raise HTTP_Exceptions.http_400("The password must contain a number.")
         if not re.search(r"[A-Z]", password):
-            return False, "The password must contain a upper case character."
+            raise HTTP_Exceptions.http_400("The password must contain a upper case character.")
         if not re.search(r"[a-z]", password):
-            return False, "The password must contain a lower case character."
+            raise HTTP_Exceptions.http_400("The password must contain a lower case character.")
         if not re.search(r"[!@#$%^&*(),.?\":{}|<>_\-+=/\\\[\];']", password):
-            return False, "The password must contain a special character."
+            raise HTTP_Exceptions.http_400("The password must contain a special character.")
 
-        return True, "Password created succesfully"
+        return True
 
     @staticmethod
     def validate_email_domain(email: str):

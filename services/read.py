@@ -2,6 +2,8 @@ from typing import Optional, Tuple, List
 from sqlalchemy import or_, desc
 from sqlalchemy.orm import Session
 from database.models.users import Users
+from helpers.http_exceptions import HTTP_Exceptions
+from helpers.services.user import UserService
 
 
 class ReadUsers:
@@ -40,4 +42,7 @@ class ReadUsers:
 
     @staticmethod
     def list_specific_user(db: Session, user_id: int) -> Users:
-        return db.query(Users).filter(Users.id == user_id).first()
+        user = UserService.get_user_by_id(db, user_id)
+        if not user:
+            raise HTTP_Exceptions.http_404("User not found.")
+        return user

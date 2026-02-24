@@ -76,10 +76,8 @@ def forgot_password(
     })
 
     user.reset_password_token = reset_token
-    # user.reset_password_expiration = datetime.now(timezone.utc) + timedelta(minutes=30)
     db.commit()
 
-    # envia email
     send_password_reset_email(user.email, reset_token)
 
     return {"message": message}
@@ -90,7 +88,6 @@ def reset_password(
     payload: ResetPasswordSchema,
     db: Session = Depends(get_db)
 ):
-    # decodifica token
     decoded = JWTHandler.verify_token(payload.token)
 
     if decoded.get("purpose") != "password_reset":
@@ -98,31 +95,21 @@ def reset_password(
 
     user_id = decoded.get("sub")
 
-    # busca usuário
     user = db.query(Users).filter(Users.id == user_id).first()
 
     if not user:
         raise HTTP_Exceptions.http_404("User not found")
 
-    # valida token salvo no banco
     if user.reset_password_token != payload.token:
         raise HTTP_Exceptions.http_401("Invalid or already used reset token")
 
-    # valida expiração
-    # if user.reset_password_expiration:
-    #     raise HTTP_Exceptions.http_401("Reset token expired")
-
-    # valida força da senha (se quiser)
     ok, msg = UserValidators.validate_password(payload.new_password)
     if not ok:
         raise HTTP_Exceptions.http_400(msg)
 
-    # atualiza senha
     user.password = UserPassword.hash_password(payload.new_password)
 
-    # limpa token
     user.reset_password_token = None
-    # user.reset_password_expiration = None
 
     db.commit()
 

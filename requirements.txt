@@ -22,5 +22,7 @@ typing_extensions==4.15.0
 typing-inspection==0.4.2
 uvicorn==0.40.0
 PyJWT==2.11.0
+passlib==1.7.4
+email-validator==2.3.0
 
 # pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org --cert false

@@ -19,7 +19,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(
         title="Auto Line Feeding API",
-        description="Auth microservice for Auto Line Feeding System",
+        description="Auth microservice responsible for powering the authentication to CIAL system",
         docs_url="/auth-docs",
     )
 

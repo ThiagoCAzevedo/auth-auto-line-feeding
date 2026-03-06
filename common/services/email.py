@@ -17,12 +17,18 @@ class EmailService:
         try:
             msg = MIMEText(body, "plain", "utf-8")
             msg["Subject"] = subject
-            msg["From"] = cls.SMTP_USER
+            msg["From"] = cls.SMTP_USER or "no-reply@example.com"
             msg["To"] = to_email
 
-            with smtplib.SMTP(cls.SMTP_HOST, cls.SMTP_PORT, timeout=10) as server:
-                server.starttls()
-                server.login(cls.SMTP_USER, cls.SMTP_PASS)
+            with smtplib.SMTP(cls.SMTP_HOST, cls.SMTP_PORT, timeout=30) as server:
+                server.ehlo()
+
+                # Só usa TLS/autenticação se NÃO for Mailhog
+                if cls.SMTP_HOST != "localhost":
+                    server.starttls()
+                    server.ehlo()
+                    server.login(cls.SMTP_USER, cls.SMTP_PASS)
+
                 server.send_message(msg)
 
         except Exception as e:

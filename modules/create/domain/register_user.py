@@ -34,10 +34,10 @@ class RegisterUserUseCase:
             db.rollback()
             raise HTTPExceptions.http_400("E-mail already exists.")
         
-        verification_token = JWTHandler.create_access_token({
-            "sub": str(user.id),
-            "email": user.email,
-            "purpose": "email_verification"
-        })
+        # verification_token = JWTHandler.create_access_token({
+        #     "sub": str(user.id),
+        #     "email": user.email,
+        #     "purpose": "email_verification"
+        # })
 
-        return user, verification_token
+        return user#, verification_token

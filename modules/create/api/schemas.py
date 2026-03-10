@@ -3,10 +3,6 @@ from typing import Optional
 from common.services.validators import UserValidators
 
 
-class EmailSchema(BaseModel):
-    email: EmailStr
-
-
 class CreateUserSchema(BaseModel):
     first_name: str = Field(...)
     last_name: str = Field(...)

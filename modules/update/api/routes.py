@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from modules.update.api.schemas import (
     UpdateUserSchema, UserResponseSchema, LoginUserSchema, LoginResponseSchema,
-    RefreshTokenSchema, RefreshTokenResponseSchema, ChangePasswordSchema, 
+    RefreshTokenSchema, ChangePasswordSchema, 
     ResetPasswordSchema, EmailSchema
 )
 from modules.update.application.update_user_service import UpdateUserService
@@ -13,7 +13,6 @@ from common.security.jwt import JWTHandler
 from common.security.dependencies import get_current_user
 from common.services.validators import UserValidators
 from common.services.user import UserService
-from common.services.email import EmailService
 
 
 router = APIRouter()
@@ -115,7 +114,6 @@ def forgot_password(payload: EmailSchema, db: Session = Depends(get_db)):
         })
 
         UpdateUserService.execute(db, user.id, reset_password_token=reset_token)
-        EmailService.send_password_reset_email(user.email, reset_token)
     except HTTPExceptions.http_404:
         pass
 

@@ -7,9 +7,6 @@ class Settings(BaseSettings):
     APP_URL: str    
     FILES_DRIVER: str
 
-    APP_VERIFY_EMAIL: str
-    APP_RESET_PASSWORD: str
-
     # MYSQL
     MYSQL_HOST: str
     MYSQL_PORT: int
@@ -22,12 +19,6 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_DAYS: int
-
-    # SMTP
-    SMTP_HOST: str
-    SMTP_PORT: int
-    SMTP_USER: str
-    SMTP_PSWD: str
 
     class Config:
         env_file = "config/.env"

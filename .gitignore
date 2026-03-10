@@ -17,11 +17,6 @@ env/
 # -- FASTAPI/UVICORN --
 *.pid
 
-# -- ALEMBIC --
-/alembic/versions/*.py
-/alembic/versions/__pycache__/
-/alembic/README
-
 # -- IDEs/TOOLS --
 .vscode/
 .idea/
@@ -31,7 +26,13 @@ env/
 # -- .ENV --
 .env
 
+# -- DATABASE -- 
+/database/migrations/versions/*.py
+/database/migrations/README
+
+
 # -- STORAGE --
 /storage/excel/
 /storage/sap/
 /storage/log/
+/tests/storage/

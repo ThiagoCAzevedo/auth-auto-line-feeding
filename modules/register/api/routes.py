@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, BackgroundTasks
 from sqlalchemy.orm import Session
-from modules.create.api.schemas import CreateUserSchema, RegisterResponseSchema
-from modules.create.application.register_user_service import RegisterUserService
+from modules.register.api.schemas import CreateUserSchema, RegisterResponseSchema
+from modules.register.application.register_user_service import RegisterUserService
 from database.session import get_db
 from common.exceptions import HTTPExceptions
 

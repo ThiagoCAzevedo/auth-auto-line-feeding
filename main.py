@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from common.logger import logger
-from modules.create.api.routes import router as register_router
-from modules.read.api.routes import router as list_router
-from modules.update.api.routes import router as login_router
+from modules.access.api.routes import router as access_router
+from modules.list.api.routes import router as list_router
+from modules.register.api.routes import router as register_router
+from modules.update.api.routes import router as update_router
 from modules.delete.api.routes import router as delete_router
 from middleware.error_handler import setup_error_handlers
 from config.settings import settings
@@ -39,14 +40,17 @@ def create_app() -> FastAPI:
         minimum_size=1000
     )
 
-    log.debug("Registering 'register' routes")
+    log.debug("Registering register routes")
     app.include_router(register_router, prefix="/user/register", tags=["register"])
     
     log.debug("Registering list routes")
     app.include_router(list_router, prefix="/admin", tags=["list"])
 
-    log.debug("Registering login routes")
-    app.include_router(login_router, prefix="/user/login", tags=["login"])
+    log.debug("Registering access routes")
+    app.include_router(access_router, prefix="/user/access", tags=["access"])
+
+    log.debug("Registering update routes")
+    app.include_router(update_router, prefix="/admin/update", tags=["update"])
 
     log.debug("Registering delete routes")
     app.include_router(delete_router, prefix="/admin/delete", tags=["delete"])

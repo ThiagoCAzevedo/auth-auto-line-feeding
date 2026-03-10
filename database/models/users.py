@@ -17,8 +17,6 @@ class Users(Base):
     is_verified = Column(Boolean, default=False)
     
     refresh_token = Column(String(255), nullable=True)
-
-    reset_password_token = Column(String(255), nullable=True)
-
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

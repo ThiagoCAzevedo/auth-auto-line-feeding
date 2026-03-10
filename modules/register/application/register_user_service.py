@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from modules.create.domain.register_user import RegisterUserUseCase
+from modules.register.domain.register_user import RegisterUserUseCase
 
 
 class RegisterUserService:

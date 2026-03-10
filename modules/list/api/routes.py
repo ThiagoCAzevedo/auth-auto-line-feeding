@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from typing import Optional
-from modules.read.api.schemas import UserResponseSchema, UserPaginationSchema
-from modules.read.application.list_users_service import ListUsersService
+from modules.list.api.schemas import UserResponseSchema, UserPaginationSchema
+from modules.list.application.list_users_service import ListUsersService
 from database.session import get_db
 from common.exceptions import HTTPExceptions
 from common.services.user import UserService

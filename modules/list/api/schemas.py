@@ -9,6 +9,7 @@ class UserResponseSchema(BaseModel):
     email: EmailStr
     status: bool
     role: Optional[str]
+    is_verified: Optional[bool]
 
     class Config:
         from_attributes = True

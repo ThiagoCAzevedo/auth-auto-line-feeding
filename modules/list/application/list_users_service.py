@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, List
 from sqlalchemy.orm import Session
-from modules.read.domain.list_users import ListUsersUseCase
+from modules.list.domain.list_users import ListUsersUseCase
 from database.models.users import Users
 
 

@@ -1,50 +1,44 @@
 from typing import Optional, Tuple, List
-from sqlalchemy import or_, desc
 from sqlalchemy.orm import Session
 from database.models.users import Users
 from common.exceptions import HTTPExceptions
 from common.services.user import UserService
+from modules.list.infrastructure.repositories import UserRepository
+from common.logger import logger
+
+
+log = logger("list_domain")
 
 
 class ListUsersUseCase:
     """Domain logic for listing users with pagination and filtering"""
-    
-    @staticmethod
+
+    def __init__(self, user_repository: UserRepository = None):
+        self.user_repository = user_repository or UserRepository()
+
     def list_users(
-            db: Session, 
-            page: int = 1, 
-            page_size: int = 10, 
-            q: Optional[str] = None, 
+            self,
+            db: Session,
+            page: int = 1,
+            page_size: int = 10,
+            q: Optional[str] = None,
             status: Optional[bool] = None
         ) -> Tuple[List[Users], int]:
         """List users with pagination, search, and filtering"""
+        log.debug(f"Listing users with filters - page: {page}, size: {page_size}, query: {q}, status: {status}")
 
-        query = db.query(Users)
-        if status is not None:
-            query = query.filter(Users.status == status)
+        items, total = self.user_repository.list_users(db, page, page_size, q, status)
 
-        if q:
-            like = f"%{q}%"
-            query = query.filter(or_(
-                Users.first_name.ilike(like), 
-                Users.last_name.ilike(like), 
-                Users.email.ilike(like)
-            ))
+        log.info(f"Users query completed - found {total} total users, returning {len(items)} items")
+        return items, total
 
-        sort_col = Users.created_at
-        query = query.order_by(desc(sort_col))
-
-        if page < 1:
-            page = 1
-        if page_size < 1:
-            page_size = 10
-        offset = (page - 1) * page_size
-        return query.offset(offset).limit(page_size).all(), query.count()
-
-    @staticmethod
-    def get_user_by_id(db: Session, user_id: int) -> Users:
+    def get_user_by_id(self, db: Session, user_id: int) -> Users:
         """Get a specific user by ID"""
-        user = UserService.get_user_by_id(db, user_id)
+        log.debug(f"Fetching user by ID: {user_id}")
+
+        user = self.user_repository.get_user_by_id(db, user_id)
         if not user:
+            log.warning(f"User not found: {user_id}")
             raise HTTPExceptions.http_404("User not found.")
+        log.debug(f"User found: {user_id} - {user.email}")
         return user

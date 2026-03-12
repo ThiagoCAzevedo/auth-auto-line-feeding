@@ -12,7 +12,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     if payload.get("type") != "access":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Refresh token cannot be used for authentication."
+            detail="Token de refresh não pode ser usado para autenticação."
         )
 
     return payload

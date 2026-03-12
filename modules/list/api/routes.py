@@ -6,6 +6,10 @@ from modules.list.application.list_users_service import ListUsersService
 from database.session import get_db
 from common.exceptions import HTTPExceptions
 from common.services.user import UserService
+from common.logger import logger
+
+
+log = logger("list_api")
 
 
 router = APIRouter()
@@ -24,8 +28,10 @@ def list_all_users(
     q: Optional[str] = Query(None, description="Search by name or e-mail"),
     status: Optional[bool] = Query(None, description="Filter by status (true or false)"),
 ):
+    log.info(f"Listing users - page: {page}, size: {page_size}, query: {q}, status: {status}")
     try:
         items, total = ListUsersService.list_users(db=db, page=page, page_size=page_size, q=q, status=status)
+        log.info(f"Users listed successfully - returned {len(items)} items out of {total} total")
         return {
             "items": items,
             "total": total,
@@ -34,7 +40,8 @@ def list_all_users(
         }
 
     except Exception as e:
-        raise HTTPExceptions.http_500("Error while listing users", e)
+        log.error(f"Failed to list users: {str(e)}", exc_info=True)
+        raise HTTPExceptions.http_500("Erro ao listar usuários", e)
 
 
 @router.get(
@@ -44,8 +51,12 @@ def list_all_users(
     dependencies=[Depends(UserService.ensure_is_admin)]
 )
 def list_specific_user(user_id: int, db: Session = Depends(get_db)):
+    log.info(f"Fetching specific user: {user_id}")
     try:
-        return ListUsersService.get_user_by_id(db, user_id)
+        user = ListUsersService.get_user_by_id(db, user_id)
+        log.info(f"User retrieved successfully: {user_id} - {user.email}")
+        return user
 
     except Exception as e:
-        raise HTTPExceptions.http_500("Error while finding specific user", e)
+        log.error(f"Failed to retrieve user {user_id}: {str(e)}", exc_info=True)
+        raise HTTPExceptions.http_500("Erro ao encontrar usuário específico", e)

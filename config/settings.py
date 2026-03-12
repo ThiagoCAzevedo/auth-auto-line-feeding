@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     MYSQL_USER: str
     MYSQL_PSWD: str
     MYSQL_DATABASE: str
+    TEST_MYSQL_URL: str
 
     # JWT
     SECRET_KEY: str

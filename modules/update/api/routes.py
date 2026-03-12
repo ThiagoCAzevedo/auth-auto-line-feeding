@@ -6,6 +6,9 @@ from modules.update.application.update_user_service import UpdateUserService
 from database.session import get_db
 from common.exceptions import HTTPExceptions
 from common.services.user import UserService
+from common.logger import logger
+
+log = logger("update_api")
 
 router = APIRouter()
 
@@ -17,8 +20,11 @@ router = APIRouter()
     dependencies=[Depends(UserService.ensure_is_admin)]
 )
 def update_user(user_id: int, payload: UpdateUserSchema, db: Session = Depends(get_db)):
+    log.info(f"Update request for user: {user_id} with fields: {list(payload.model_dump(exclude_none=True).keys())}")
     try:
         user = UpdateUserService.execute(db=db, user_id=user_id, **payload.model_dump(exclude_none=True))
+        log.info(f"User updated successfully: {user_id} - {user.email}")
         return user
     except Exception as e:
-        raise HTTPExceptions.http_500("Error while updating user: ", e)
+        log.error(f"Failed to update user {user_id}: {str(e)}", exc_info=True)
+        raise HTTPExceptions.http_500("Erro ao atualizar usuário: ", e)

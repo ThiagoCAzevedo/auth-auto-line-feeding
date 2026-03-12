@@ -1,21 +1,23 @@
 from sqlalchemy.orm import Session
 from database.models.users import Users
+from modules.update.infrastructure.repositories import UserUpdateRepository
+from common.logger import logger
+
+
+log = logger("update_domain")
 
 
 class UpdateUserUseCase:
     """Domain logic for updating users"""
-    
-    @staticmethod
-    def update_user(db: Session, user_id: int, **fields):
+
+    def __init__(self, user_repository: UserUpdateRepository = None):
+        self.user_repository = user_repository or UserUpdateRepository()
+
+    def update_user(self, db: Session, user_id: int, **fields):
         """Update user fields"""
-        user = db.query(Users).filter(Users.id == user_id).first()
-        if not user:
-            raise Exception("User not found")
+        log.debug(f"Updating user {user_id} with fields: {list(fields.keys())}")
 
-        for column, value in fields.items():
-            if value is not None:
-                setattr(user, column, value)
+        user = self.user_repository.update_user(db, user_id, **fields)
 
-        db.commit()
-        db.refresh(user)
+        log.info(f"User updated successfully: {user_id} - {user.email}")
         return user

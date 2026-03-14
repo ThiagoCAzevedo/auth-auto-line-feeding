@@ -1,13 +1,11 @@
-import sys
-import pytest
 from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
-
 from database.base import Base
 from database.session import get_db
 from main import create_app
+import sys, pytest
 
 
 project_root = Path(__file__).parent.parent

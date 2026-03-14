@@ -11,7 +11,7 @@ log = logger("delete_api")
 
 
 router = APIRouter()
-
+ 
 
 @router.delete(
     "/{user_id}",
